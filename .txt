@@ -1,0 +1,74 @@
+- created an object keys with 4 arrowkeys as false
+
+- added eventListener - keydown - when the key is pressed - keys[e.key] = true - means the pressed key works
+                      - keyup - when the key is released - keys[e.key] = false - means key stopsworking    
+
+- added a class 'hide' to gameAreaRoad and made display hidden (index.html)
+- added a click event to startScreen -- startScreen.classList.add('hide'); gameAreaRoad.classList.remove('hide');
+means as we click startScreen it will hide and gameAreaRoad will be visible
+
+- window.requestAnimationFrame(playGame)  -- to perform an animation
+
+- in index.html gameAreaRoad(i.e., road) -div is empty -- in js we added a div 'car' inside gameAreaRoad 
+    let car = document.createElement('div')
+    car.setAttribute('class', 'car')  -- added a class - car
+    gameAreaRoad.appendChild(car); -- added div-car inside gameAreaRoad
+
+- to make car movable we should know the position of car 
+    - player.x = car.offsetLeft - x means in horizontal direction distance of car from left
+    - player.y = car.offsetTop - y means in vertical direction distance of car from top (we can also take right and bottom) 
+    - we added both these values in player ={} object
+
+- to place car on road make its position:absolute and its parentElement(gameAreaRoad) position:relative
+    - car.style.top = player.y + "px"
+    - car.style.left = player.x + "px"
+        - these values gives the position of car on gameAreaRoad 
+
+- to move car only on road we should know the dimensions of road - let road = gameAreaRoad.getBoundingClientRect() - this gives all dimensions of road - see the dimensions using console.log(road)
+
+- know what we done is
+    - add roadTop + car height - (does not allow car to go beyond top) road top value is 0 increasing the top value means car comes down 
+        if(keys.ArrowUp && player.y > road.top+70){ 
+            player.y -= player.speed 
+        }
+    - subtract roadBottom - car height - does not allow the car to go beyond bottom
+        if(keys.ArrowDown && player.y < (road.bottom-70)){ 
+            player.y += player.speed 
+        }
+    - from left side car is at the right position so player.x>0
+        if(keys.ArrowLeft && player.x > 0){ 
+            player.x -= player.speed 
+        }
+    - subtract roadWidth-carWidth, if player.x< roadWidth-carWidth then car does not not go beyond right
+        if(keys.ArrowRight && player.x <(road.width-50)){
+            player.x += player.speed 
+        };
+
+- created lines using for loop
+    for(let x=0; x<8; x++){ // gives 7 lines 
+        let roadLine = document.createElement('div') // created a div 
+        roadLine.setAttribute('class', 'lines')  // given class 'lines' to the div
+        roadLine.y = (x*150);  // vertical direction - 0*150 = 0px(line is at 0px), 1*150=150px(2nd line at 150px)
+        roadLine.style.top = roadLine.y + "px"; // position of lines from top
+        gameAreaRoad.appendChild(roadLine);  
+    }
+
+- to move the lines made a function moveLines()
+    - function moveLines(){
+        let lines = document.querySelectorAll('.lines');
+        lines.forEach((item)=>{ //for each line 
+            if(item.y >= 700){
+                item.y -= 750;
+            }
+        item.y += player.speed;  // takes the speed of player i.e., 5
+        item.style.top = item.y + "px"; 
+        })
+    }
+    - if(item.y >= 700){item.y -= 750} - how we calculated this is if screenHeight is 600px then add height of line-50px = 700px, as the line touches 700px subtract 750 (700 + height of line) this makes lines again at first position 
+
+- created cars and made a function moveEnemyCars(cars) same as lines 
+
+- to check whether the cars collide made a function isCollide(a,b){}, call the function inside moveEnemyCars(cars) as 
+    if(isCollide(car, item)){
+        console.log('cat hit');
+    }
